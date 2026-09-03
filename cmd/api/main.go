@@ -1,31 +1,47 @@
 package main
 
 import (
-	"encoding/json"
+	"context"
 	"log"
 	"net/http"
-)
+	"os"
+	"time"
 
-type HealthResponse struct {
-	Status string `json:"status"`
-}
+	"github.com/amarmaulana95/next-erp/internal/database"
+	"github.com/amarmaulana95/next-erp/internal/employee"
+)
 
 func healthHandler(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json")
-
-	response := HealthResponse{
-		Status: "ok",
-	}
-
-	json.NewEncoder(w).Encode(response)
+	w.Write([]byte(`{"status":"ok"}`))
 }
 
 func main() {
+	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
+	defer cancel()
+
+	pool, err := database.NewPostgresPool(ctx)
+	if err != nil {
+		log.Fatalf("database connection failed: %v", err)
+	}
+	defer pool.Close()
+
+	log.Println("PostgreSQL connection established")
+
+	employeeRepository := employee.NewRepository(pool)
+	employeeHandler := employee.NewHandler(employeeRepository)
+
 	http.HandleFunc("/health", healthHandler)
+	http.HandleFunc("/api/employees", employeeHandler.GetAll)
 
-	log.Println("Next-ERP API running on :8081")
+	port := os.Getenv("PORT")
+	if port == "" {
+		port = "8081"
+	}
 
-	if err := http.ListenAndServe(":8081", nil); err != nil {
+	log.Printf("Next-ERP API running on :%s", port)
+
+	if err := http.ListenAndServe(":"+port, nil); err != nil {
 		log.Fatal(err)
 	}
 }

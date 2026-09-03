@@ -1,0 +1,16 @@
+services:
+  postgres:
+    image: postgres:16
+    container_name: next-erp-postgres
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: next_erp
+      POSTGRES_USER: next_erp_app
+      POSTGRES_PASSWORD: next_erp_dev
+    ports:
+      - "5433:5432"
+    volumes:
+      - next_erp_postgres_data:/var/lib/postgresql/data
+
+volumes:
+  next_erp_postgres_data:

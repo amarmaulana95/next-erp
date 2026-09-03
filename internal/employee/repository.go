@@ -57,3 +57,30 @@ func (r *Repository) GetAll(ctx context.Context) ([]Employee, error) {
 
 	return employees, nil
 }
+
+func (r *Repository) GetByID(ctx context.Context, id int64) (*Employee, error) {
+	var employee Employee
+
+	err := r.db.QueryRow(ctx, `
+		SELECT
+			id,
+			employee_code,
+			name,
+			department,
+			position
+		FROM employees
+		WHERE id = $1
+	`, id).Scan(
+		&employee.ID,
+		&employee.EmployeeCode,
+		&employee.Name,
+		&employee.Department,
+		&employee.Position,
+	)
+
+	if err != nil {
+		return nil, fmt.Errorf("get employee by id: %w", err)
+	}
+
+	return &employee, nil
+}

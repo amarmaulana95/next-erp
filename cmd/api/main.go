@@ -33,6 +33,7 @@ func main() {
 
 	http.HandleFunc("/health", healthHandler)
 	http.HandleFunc("/api/employees", employeeHandler.GetAll)
+	http.HandleFunc("/api/employees/{id}", employeeHandler.GetByID)
 
 	port := os.Getenv("PORT")
 	if port == "" {

@@ -12,5 +12,17 @@ services:
     volumes:
       - next_erp_postgres_data:/var/lib/postgresql/data
 
+  api:
+    image: next-erp-api:local-v1
+    container_name: next-erp-api
+    restart: unless-stopped
+    environment:
+      DATABASE_URL: postgres://next_erp_app:next_erp_dev@postgres:5432/next_erp
+      PORT: "8081"
+    ports:
+      - "8081:8081"
+    depends_on:
+      - postgres
+
 volumes:
   next_erp_postgres_data:

@@ -11,6 +11,11 @@ services:
       - "5433:5432"
     volumes:
       - next_erp_postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U next_erp_app -d next_erp"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
 
   api:
     image: next-erp-api:local-v1
@@ -22,7 +27,8 @@ services:
     ports:
       - "8081:8081"
     depends_on:
-      - postgres
+      postgres:
+        condition: service_healthy
 
 volumes:
   next_erp_postgres_data:

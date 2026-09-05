@@ -1,0 +1,21 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: next-erp-dev
+  namespace: argocd
+spec:
+  project: default
+
+  source:
+    repoURL: https://github.com/amarmaulana95/next-erp.git
+    targetRevision: main
+    path: k8s/overlays/development
+
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: next-erp-dev
+
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true

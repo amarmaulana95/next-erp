@@ -1,0 +1,13 @@
+apiVersion: secrets.hashicorp.com/v1beta1
+kind: VaultAuth
+metadata:
+  name: next-erp-vault-auth
+  namespace: next-erp-dev
+spec:
+  method: kubernetes
+  mount: kubernetes
+  vaultConnectionRef: next-erp-vault
+
+  kubernetes:
+    role: next-erp-vso
+    serviceAccount: vault-secrets-operator-controller-manager

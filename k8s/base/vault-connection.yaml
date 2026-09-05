@@ -1,0 +1,8 @@
+apiVersion: secrets.hashicorp.com/v1beta1
+kind: VaultConnection
+metadata:
+  name: next-erp-vault
+  namespace: next-erp-dev
+spec:
+  address: http://vault.next-erp-dev.svc:8200
+  skipTLSVerify: false

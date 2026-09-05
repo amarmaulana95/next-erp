@@ -1,0 +1,51 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: next-erp-api
+  namespace: next-erp-dev
+
+spec:
+  replicas: 1
+
+  selector:
+    matchLabels:
+      app: next-erp-api
+
+  template:
+    metadata:
+      labels:
+        app: next-erp-api
+
+    spec:
+      containers:
+        - name: api
+          image: next-erp-api:local-v2
+          imagePullPolicy: Never
+
+          ports:
+            - name: http
+              containerPort: 8081
+
+          env:
+            - name: PORT
+              value: "8081"
+
+            - name: DATABASE_URL
+              valueFrom:
+                secretKeyRef:
+                  name: next-erp-db-secret
+                  key: DATABASE_URL
+
+          readinessProbe:
+            httpGet:
+              path: /ready
+              port: http
+            initialDelaySeconds: 5
+            periodSeconds: 10
+
+          livenessProbe:
+            httpGet:
+              path: /health
+              port: http
+            initialDelaySeconds: 10
+            periodSeconds: 20

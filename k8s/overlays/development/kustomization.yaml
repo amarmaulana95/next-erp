@@ -5,3 +5,7 @@ namespace: next-erp-dev
 
 resources:
   - ../../base
+
+labels:
+  - pairs:
+      environment: development

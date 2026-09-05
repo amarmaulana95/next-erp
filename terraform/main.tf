@@ -11,11 +11,11 @@ terraform {
 
 provider "kubernetes" {
   config_path    = "~/.kube/config"
-  config_context = "kind-next-erp-dev-cluster"
+  config_context = var.kubernetes_context
 }
 
 resource "kubernetes_namespace" "next_erp_dev" {
   metadata {
-    name = "next-erp-dev"
+    name = var.namespace
   }
 }

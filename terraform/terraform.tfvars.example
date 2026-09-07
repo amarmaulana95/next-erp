@@ -1,0 +1,2 @@
+kubernetes_context = "kind-next-erp-dev-cluster"
+namespace          = "next-erp-dev"
